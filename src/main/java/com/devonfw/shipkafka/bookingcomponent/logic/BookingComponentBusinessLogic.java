@@ -8,6 +8,7 @@ import com.devonfw.shipkafka.bookingcomponent.dtos.BookingCreateDTO;
 import com.devonfw.shipkafka.bookingcomponent.exceptions.BookingAlreadyConfirmedException;
 import com.devonfw.shipkafka.bookingcomponent.exceptions.BookingNotFoundException;
 import com.devonfw.shipkafka.bookingcomponent.exceptions.CustomerNotFoundException;
+import com.devonfw.shipkafka.bookingcomponent.exceptions.ShipNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,20 @@ public class BookingComponentBusinessLogic {
             return bookingRepository.findConfirmedBookings(customerId);
         } else {
             return customer.getBookings();
+        }
+    }
+
+    @Transactional(rollbackFor = {ShipNotFoundException.class})
+    public void cancelBookings(String ship)throws ShipNotFoundException{
+        List<Booking> bookings = bookingRepository.findBookingsByShip(ship);
+
+        if (bookings.isEmpty()){
+            throw new ShipNotFoundException(ship);
+        }
+
+        for (Booking booking : bookings) {
+            booking.updateBookingStatus(BookingStatus.CANCELED);
+            bookingRepository.save(booking);
         }
     }
 }
