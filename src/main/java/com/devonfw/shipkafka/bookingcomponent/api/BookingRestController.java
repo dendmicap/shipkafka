@@ -1,6 +1,5 @@
 package com.devonfw.shipkafka.bookingcomponent.api;
 
-import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingCode;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.BookingRepository;
 import com.devonfw.shipkafka.bookingcomponent.exceptions.BookingAlreadyConfirmedException;
@@ -9,7 +8,6 @@ import com.devonfw.shipkafka.bookingcomponent.logic.BookingComponentBusinessLogi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -35,18 +33,8 @@ public class BookingRestController {
     }
 
     @GetMapping
-    public List<Booking> getBookings(@RequestParam(value = "bookingcode", required = false, defaultValue = "") String bookingCode) throws BookingNotFoundException {
-        if (bookingCode.isEmpty()) {
-            return bookingRepository.findAll();
-        } else {
-            if (!BookingCode.isValid(bookingCode)) {
-                throw new BookingNotFoundException(bookingCode);
-            } else {
-                return Collections.singletonList(bookingRepository
-                        .findByBookingCode(new BookingCode(bookingCode))
-                        .orElseThrow(() -> new BookingNotFoundException(bookingCode)));
-            }
-        }
+    public List<Booking> getBookings() {
+        return bookingRepository.findAll();
     }
 
     @PutMapping(value = "/{id:\\d+}/confirm")

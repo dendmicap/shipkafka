@@ -1,14 +1,11 @@
 package com.devonfw.shipkafka.bookingcomponent.domain.entities;
 
-import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingCode;
 import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.bookingcomponent.dtos.BookingCreateDTO;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -17,9 +14,6 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Booking {
 
-    @Setter(AccessLevel.NONE)
-    @Column(unique = true, nullable = false, length = 100)
-    private final BookingCode bookingCode = new BookingCode();
     @Setter(AccessLevel.NONE)
     private final Date createdOn = new Date();
     @Id
