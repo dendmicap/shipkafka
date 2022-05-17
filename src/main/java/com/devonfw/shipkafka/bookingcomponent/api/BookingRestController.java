@@ -27,7 +27,7 @@ public class BookingRestController {
         this.bookingRepository = bookingRepository;
     }
 
-    @GetMapping(value = "/{id:[\\d]+}")
+    @GetMapping(value = "/{id:\\d+}")
     public Booking getBooking(@PathVariable("id") Long bookingId) throws BookingNotFoundException {
         return bookingRepository
                 .findById(bookingId)
@@ -49,7 +49,7 @@ public class BookingRestController {
         }
     }
 
-    @PutMapping(value = "/{id:[\\d]+}/confirm")
+    @PutMapping(value = "/{id:\\d+}/confirm")
     public void confirmBooking(@PathVariable("id") Long bookingId) throws BookingNotFoundException, BookingAlreadyConfirmedException {
         bookingComponentBusinessLogic.confirmBooking(bookingId);
     }

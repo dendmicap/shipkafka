@@ -3,17 +3,18 @@ package com.devonfw.shipkafka.bookingcomponent.domain.entities;
 import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingCode;
 import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.bookingcomponent.dtos.BookingCreateDTO;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Booking {
 
     @Setter(AccessLevel.NONE)

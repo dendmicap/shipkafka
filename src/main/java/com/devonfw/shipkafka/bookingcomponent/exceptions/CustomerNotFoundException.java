@@ -13,7 +13,7 @@ public class CustomerNotFoundException extends Exception {
     private final Long customerId;
 
     public CustomerNotFoundException(Long customerId) {
-        super(String.format("Could not find customer with numer %d.", customerId));
+        super(String.format("Could not find customer with number %d.", customerId));
 
         this.customerId = customerId;
     }

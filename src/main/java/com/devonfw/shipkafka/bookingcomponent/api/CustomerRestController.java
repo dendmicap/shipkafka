@@ -37,7 +37,7 @@ public class CustomerRestController {
         return customerRepository.findAll();
     }
 
-    @GetMapping(value = "/{id:[\\d]+}")
+    @GetMapping(value = "/{id:\\d+}")
     public Customer getCustomer(@PathVariable("id") Long customerId) throws CustomerNotFoundException {
 
         return customerRepository
@@ -45,12 +45,12 @@ public class CustomerRestController {
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));
     }
 
-    @GetMapping(value = "/{id:[\\d]+}/bookings")
+    @GetMapping(value = "/{id:\\d+}/bookings")
     public List<Booking> getBookingsOfCustomer(@PathVariable("id") Long customerId, @RequestParam(value = "onlyConfirmed", required = false, defaultValue = "false") Boolean onlyConfirmed) throws CustomerNotFoundException {
         return bookingComponentBusinessLogic.getBookings(customerId, onlyConfirmed);
     }
 
-    @DeleteMapping("/{id:[\\d]+}")
+    @DeleteMapping("/{id:\\d+}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCustomer(@PathVariable("id") Long customerId) throws CustomerNotFoundException {
 
@@ -82,13 +82,13 @@ public class CustomerRestController {
         customerRepository.save(customerToUpdate);
     }
 
-    @PostMapping(value = "/{id:[\\d]+}/bookings")
+    @PostMapping(value = "/{id:\\d+}/bookings")
     public ResponseEntity<?> addBooking(@PathVariable("id") Long customerId, @Valid @RequestBody BookingCreateDTO bookingCreateDTO) {
         try {
             Booking booking = bookingComponentBusinessLogic.addBooking(customerId, bookingCreateDTO);
-            return new ResponseEntity<IdDTO>(new IdDTO(booking.getId()), HttpStatus.CREATED);
+            return new ResponseEntity<>(new IdDTO(booking.getId()), HttpStatus.CREATED);
         } catch (CustomerNotFoundException ex) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

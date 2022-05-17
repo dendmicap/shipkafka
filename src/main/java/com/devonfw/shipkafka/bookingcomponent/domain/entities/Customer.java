@@ -1,17 +1,16 @@
 package com.devonfw.shipkafka.bookingcomponent.domain.entities;
 import com.devonfw.shipkafka.bookingcomponent.dtos.CustomerCreateDTO;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Customer {
 
     @Id

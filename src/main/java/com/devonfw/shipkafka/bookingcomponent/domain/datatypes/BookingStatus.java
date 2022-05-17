@@ -16,6 +16,6 @@ public enum BookingStatus {
                 return newState;
             }
         }
-        throw new IllegalArgumentException(String.format("Illegal state transition from %s to %s.", this.toString(), newState.toString()));
+        throw new IllegalArgumentException(String.format("Illegal state transition from %s to %s.", this, newState));
     }
 }
