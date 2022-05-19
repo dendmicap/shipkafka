@@ -1,4 +1,4 @@
-package com.devonfw.shipkafka.bookingcomponent.domain.datatypes;
+package com.devonfw.shipkafka.common.domain.datatypes;
 
 public enum BookingStatus {
     REQUESTED, CONFIRMED(REQUESTED), CANCELED(REQUESTED, CONFIRMED);

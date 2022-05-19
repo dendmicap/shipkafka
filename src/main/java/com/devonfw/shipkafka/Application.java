@@ -1,9 +1,11 @@
 package com.devonfw.shipkafka;
 
-import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingStatus;
-import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
+import com.devonfw.shipkafka.common.domain.datatypes.BookingStatus;
+import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Customer;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.CustomerRepository;
+import com.devonfw.shipkafka.shipcomponent.domain.entities.Ship;
+import com.devonfw.shipkafka.shipcomponent.domain.repositories.ShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -35,14 +37,24 @@ class PopulateTestDataRunner implements CommandLineRunner {
 
 	private final CustomerRepository customerRepository;
 
+	private final ShipRepository shipRepository;
+
 	@Autowired
-	public PopulateTestDataRunner(CustomerRepository customerRepository) {
+	public PopulateTestDataRunner(CustomerRepository customerRepository, ShipRepository shipRepository) {
 		super();
 		this.customerRepository = customerRepository;
+		this.shipRepository = shipRepository;
 	}
 
 	@Override
 	public void run(String... args) {
+
+		shipRepository.save(new Ship("Ship Aachen", 2));
+		Ship shipBerlin = new Ship("Ship Berlin", 5);
+		shipRepository.save(shipBerlin);
+		Ship shipHamburg = new Ship("Ship Hamburg", 8);
+		shipRepository.save(shipHamburg);
+
 		Arrays.asList(
 						"Miller,Doe,Smith".split(","))
 				.forEach(
@@ -50,9 +62,9 @@ class PopulateTestDataRunner implements CommandLineRunner {
 				);
 
 		Customer customer = new Customer("Max", "Muster");
-		Booking booking = new Booking("scandlines1");
+		Booking booking = new Booking(shipBerlin.getId(), 3);
 		customer.getBookings().add(booking);
-		booking = new Booking("scandlines2");
+		booking = new Booking(shipHamburg.getId(), 5);
 		booking.updateBookingStatus(BookingStatus.CONFIRMED);
 		customer.getBookings().add(booking);
 

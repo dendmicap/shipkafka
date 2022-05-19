@@ -13,7 +13,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class BookingCreateDTO {
 
-    @Size(min = 1, max = 20)
     @NotNull
-    public String ship;
+    public Long shipId;
+
+    @NotNull
+    public int containerCount;
+
 }

@@ -1,5 +1,6 @@
 package com.devonfw.shipkafka.bookingcomponent.domain.entities;
 import com.devonfw.shipkafka.bookingcomponent.dtos.CustomerCreateDTO;
+import com.devonfw.shipkafka.common.domain.entities.Booking;
 import lombok.*;
 
 import javax.persistence.*;

@@ -1,6 +1,6 @@
 package com.devonfw.shipkafka.bookingcomponent.api;
 
-import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
+import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Customer;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.CustomerRepository;
 import com.devonfw.shipkafka.bookingcomponent.dtos.BookingCreateDTO;

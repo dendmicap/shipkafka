@@ -5,6 +5,8 @@ import com.devonfw.shipkafka.bookingcomponent.domain.entities.Customer;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.CustomerRepository;
 import com.devonfw.shipkafka.bookingcomponent.dtos.BookingCreateDTO;
 import com.devonfw.shipkafka.bookingcomponent.dtos.IdDTO;
+import com.devonfw.shipkafka.shipcomponent.domain.entities.Ship;
+import com.devonfw.shipkafka.shipcomponent.domain.repositories.ShipRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.commons.logging.Log;
@@ -51,13 +53,22 @@ class CustomerRestControllerTest {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private ShipRepository shipRepository;
+
     private Customer customer;
+
+    private Ship ship;
 
     @BeforeEach
     void setUp() {
         this.customerRepository.deleteAll();
+        this.shipRepository.deleteAll();
 
         customer = this.customerRepository.save(new Customer("Max", "Muster"));
+
+        ship = this.shipRepository.save(new Ship("Mein Schiff 42", 10));
 
         RestAssured.port = port;
         RestAssured.basePath = "";
@@ -244,7 +255,7 @@ class CustomerRestControllerTest {
         //@formatter:off
         Long bookingId = given().
                 contentType(ContentType.JSON).
-                body(new BookingCreateDTO("Mein Schiff 42")).
+                body(new BookingCreateDTO(ship.getId(), 5)).
         when().
                 post("/customers/{id}/bookings", customer.getId()).
         then().
@@ -260,7 +271,7 @@ class CustomerRestControllerTest {
         //@formatter:off
         given().
                 contentType(ContentType.JSON).
-                body(new BookingCreateDTO("some ship")).
+                body(new BookingCreateDTO(ship.getId(), 3)).
         when().
                 post("/customers/{id}/bookings", Integer.MAX_VALUE).
         then().

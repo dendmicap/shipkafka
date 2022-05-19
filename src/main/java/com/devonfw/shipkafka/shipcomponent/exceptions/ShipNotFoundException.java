@@ -1,4 +1,4 @@
-package com.devonfw.shipkafka.bookingcomponent.exceptions;
+package com.devonfw.shipkafka.shipcomponent.exceptions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @EqualsAndHashCode(callSuper = false)
 public class ShipNotFoundException extends Exception {
 
-    private final String ship;
+    private final Long shipId;
 
-    public ShipNotFoundException(String ship) {
-        super(String.format("Ship %s was not found.", ship));
+    public ShipNotFoundException(Long shipId) {
+        super(String.format("Ship %s was not found.", shipId));
 
-        this.ship = ship;
+        this.shipId = shipId;
     }
 }

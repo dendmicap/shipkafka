@@ -1,8 +1,8 @@
 package com.devonfw.shipkafka.bookingcomponent.api;
 
-import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
+import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.BookingRepository;
-import com.devonfw.shipkafka.bookingcomponent.exceptions.BookingAlreadyConfirmedException;
+import com.devonfw.shipkafka.common.exceptions.BookingAlreadyConfirmedException;
 import com.devonfw.shipkafka.bookingcomponent.exceptions.BookingNotFoundException;
 import com.devonfw.shipkafka.bookingcomponent.logic.BookingComponentBusinessLogic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class BookingComponent {
         return bookingRepository.findById(bookingId);
     }
 
-    public void confirm(Long bookingId) throws BookingNotFoundException, BookingAlreadyConfirmedException {
-
-        bookingComponentBusinessLogic.confirmBooking(bookingId);
-    }
+//    public void confirm(Long bookingId) throws BookingNotFoundException, BookingAlreadyConfirmedException {
+//
+//        bookingComponentBusinessLogic.confirmBooking(bookingId);
+//    }
 }

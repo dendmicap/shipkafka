@@ -1,4 +1,4 @@
-package com.devonfw.shipkafka.bookingcomponent.exceptions;
+package com.devonfw.shipkafka.common.exceptions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;

@@ -1,8 +1,10 @@
 package com.devonfw.shipkafka.bookingcomponent.api;
 
 import com.devonfw.shipkafka.Application;
-import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
+import com.devonfw.shipkafka.common.domain.datatypes.BookingStatus;
+import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.BookingRepository;
+import com.devonfw.shipkafka.shipcomponent.domain.entities.Ship;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,8 +33,9 @@ class BookingComponentTest {
     @BeforeEach
     void setUp() {
         this.bookingRepository.deleteAll();
-        confirmedBooking = this.bookingRepository.save(new Booking("Mein Hybrid-Schiff"));
-        assertThatCode(() -> { bookingComponent.confirm(confirmedBooking.getId()); }).doesNotThrowAnyException();
+        Ship ship = new Ship("Mein Hybrid-Schiff", 5);
+        confirmedBooking = this.bookingRepository.save(new Booking(ship.getId(), 3));
+        confirmedBooking.updateBookingStatus(BookingStatus.CONFIRMED);
     }
 
     @Test

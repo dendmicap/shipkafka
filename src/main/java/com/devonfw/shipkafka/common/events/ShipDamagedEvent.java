@@ -1,4 +1,4 @@
-package com.devonfw.shipkafka.bookingcomponent.events;
+package com.devonfw.shipkafka.common.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ShipDamagedEvent {
 
-    private String ship;
+    private Long shipId;
 }
