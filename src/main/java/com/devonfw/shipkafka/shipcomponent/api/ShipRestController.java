@@ -38,14 +38,14 @@ public class ShipRestController {
         return shipRepository.findAll();
     }
 
-    @GetMapping(value = "/{id:\\d+}/damage")
+    @GetMapping(value = "/{id:\\d+}")
     public Ship getShip(@PathVariable("id") Long shipId) throws ShipNotFoundException {
         return shipRepository
                 .findById(shipId)
                 .orElseThrow(() -> new ShipNotFoundException(shipId));
     }
 
-    @PostMapping(value = "/{id:\\d+}")
+    @PostMapping(value = "/{id:\\d+}/damage")
     @ResponseStatus(HttpStatus.OK)
     public ShipDamagedEvent postDamagedShip(@PathVariable("id") Long shipId) {
         ShipDamagedEvent shipDamagedEvent = new ShipDamagedEvent(shipId);
