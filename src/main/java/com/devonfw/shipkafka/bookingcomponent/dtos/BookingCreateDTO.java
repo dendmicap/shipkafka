@@ -1,5 +1,6 @@
 package com.devonfw.shipkafka.bookingcomponent.dtos;
 
+import com.devonfw.shipkafka.bookingcomponent.domain.entities.Ship;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +16,5 @@ public class BookingCreateDTO {
 
     @Size(min = 1, max = 20)
     @NotNull
-    public String ship;
+    public Ship ship;             // previously public String ship
 }

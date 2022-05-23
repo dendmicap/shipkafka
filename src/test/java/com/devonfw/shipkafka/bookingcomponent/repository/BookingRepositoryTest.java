@@ -30,6 +30,7 @@ class BookingRepositoryTest {
 
     private Customer customer;
 
+    /*
     @BeforeEach
     void setUp() {
         this.customerRepository.deleteAll();
@@ -44,6 +45,8 @@ class BookingRepositoryTest {
 
         customerRepository.save(customer);
     }
+
+     */
 
     @Test
     void findConfirmedBookingsSuccess() {

@@ -21,7 +21,8 @@ public class Booking {
     private Long id;
     private Date lastUpdatedOn;
 
-    private String ship;
+    //private String ship;
+    private Ship ship;
 
     @Setter(AccessLevel.NONE)
     private BookingStatus bookingStatus = BookingStatus.REQUESTED;
@@ -29,7 +30,7 @@ public class Booking {
     @Version
     private Long version;
 
-    public Booking(String ship) {
+    public Booking(Ship ship) {
 
         this.ship = ship;
         this.lastUpdatedOn = new Date();

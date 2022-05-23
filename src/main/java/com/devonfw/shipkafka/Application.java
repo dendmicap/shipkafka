@@ -3,6 +3,7 @@ package com.devonfw.shipkafka;
 import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Customer;
+import com.devonfw.shipkafka.bookingcomponent.domain.entities.Ship;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -49,10 +50,13 @@ class PopulateTestDataRunner implements CommandLineRunner {
 						name -> customerRepository.save(new Customer("Jane", name))
 				);
 
+		Ship shipOne = new Ship();
+		shipOne.setShipName("Titanic");
+		shipOne.setAvailableContainer(2);
 		Customer customer = new Customer("Max", "Muster");
-		Booking booking = new Booking("scandlines1");
+		Booking booking = new Booking(shipOne);
 		customer.getBookings().add(booking);
-		booking = new Booking("scandlines2");
+		//booking = new Booking("scandlines2");
 		booking.updateBookingStatus(BookingStatus.CONFIRMED);
 		customer.getBookings().add(booking);
 

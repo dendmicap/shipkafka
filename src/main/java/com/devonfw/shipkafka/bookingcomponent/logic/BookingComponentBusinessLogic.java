@@ -2,6 +2,7 @@ package com.devonfw.shipkafka.bookingcomponent.logic;
 import com.devonfw.shipkafka.bookingcomponent.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Booking;
 import com.devonfw.shipkafka.bookingcomponent.domain.entities.Customer;
+import com.devonfw.shipkafka.bookingcomponent.domain.entities.Ship;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.BookingRepository;
 import com.devonfw.shipkafka.bookingcomponent.domain.repositories.CustomerRepository;
 import com.devonfw.shipkafka.bookingcomponent.dtos.BookingCreateDTO;
@@ -82,8 +83,9 @@ public class BookingComponentBusinessLogic {
         }
     }
 
+    // public void cancelBookings(String ship)
     @Transactional(rollbackFor = {ShipNotFoundException.class})
-    public void cancelBookings(String ship)throws ShipNotFoundException{
+    public void cancelBookings(Ship ship)throws ShipNotFoundException{
         List<Booking> bookings = bookingRepository.findBookingsByShip(ship);
 
         if (bookings.isEmpty()){

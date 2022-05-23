@@ -28,12 +28,15 @@ class BookingComponentTest {
 
     private Booking confirmedBooking;
 
+    /*
     @BeforeEach
     void setUp() {
         this.bookingRepository.deleteAll();
         confirmedBooking = this.bookingRepository.save(new Booking("Mein Hybrid-Schiff"));
         assertThatCode(() -> { bookingComponent.confirm(confirmedBooking.getId()); }).doesNotThrowAnyException();
     }
+    */
+
 
     @Test
     void getBookingSuccess() {

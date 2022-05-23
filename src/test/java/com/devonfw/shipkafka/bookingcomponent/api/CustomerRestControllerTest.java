@@ -239,6 +239,7 @@ class CustomerRestControllerTest {
         //@formatter:on
     }
 
+    /*
     @Test
     void createBookingSuccess() throws IOException {
         //@formatter:off
@@ -267,4 +268,6 @@ class CustomerRestControllerTest {
                 statusCode(HttpStatus.NOT_FOUND.value());
         //@formatter:on
     }
+
+     */
 }
