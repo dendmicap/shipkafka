@@ -13,9 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +34,8 @@ public class BookingComponentMessagingGateway {
     private final KafkaTemplate<String, Object> template;
     private final KafkaTemplate<Long, Object> longTemplate;
 
+    private boolean fail = true;
+
 
     private final BookingComponentBusinessLogic bookingComponentBusinessLogic;
 
@@ -41,9 +46,23 @@ public class BookingComponentMessagingGateway {
         this.longTemplate = longTemplate;
     }
 
+    @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 2_000, maxDelay = 10_000, multiplier = 2))
     @KafkaListener(id ="ship-damaged", topics = "ship-damaged", groupId = "booking")
     public void listenShipDamaged(ShipDamagedEvent shipDamagedEvent) throws ShipNotFoundException {
+        if(fail){
+            fail = false;
+            //throw new RuntimeException("failed");
+            LOG.info("FAILED");
+            throw new ShipNotFoundException((long) 22);
+        }
         LOG.info("Received message: {}", shipDamagedEvent.toString());
+        bookingComponentBusinessLogic.cancelBookings(shipDamagedEvent.getShipId());
+        fail=true;
+    }
+
+    @DltHandler
+    public void listenShipDamagedDlt(ShipDamagedEvent shipDamagedEvent){
+        LOG.info("Received DLT message: {}", shipDamagedEvent.toString());
         bookingComponentBusinessLogic.cancelBookings(shipDamagedEvent.getShipId());
     }
 

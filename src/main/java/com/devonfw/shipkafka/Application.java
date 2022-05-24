@@ -63,6 +63,7 @@ class PopulateTestDataRunner implements CommandLineRunner {
 
 		Customer customer = new Customer("Max", "Muster");
 		Booking booking = new Booking(shipBerlin.getId(), 3);
+		booking.updateBookingStatus(BookingStatus.CANCELED);
 		customer.getBookings().add(booking);
 		booking = new Booking(shipHamburg.getId(), 5);
 		booking.updateBookingStatus(BookingStatus.CONFIRMED);
