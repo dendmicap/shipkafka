@@ -1,6 +1,7 @@
 package com.devonfw.shipkafka.shipcomponent.api;
 
 import com.devonfw.shipkafka.bookingcomponent.logic.BookingComponentBusinessLogic;
+import com.devonfw.shipkafka.common.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.common.events.ShipDamagedEvent;
 import com.devonfw.shipkafka.common.exceptions.BookingAlreadyConfirmedException;
@@ -34,7 +35,7 @@ public class ShipRestController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShipRestController.class);
 
-    private boolean shipDamaged = false;
+    private boolean shipDamaged;
 
     @Autowired
     public ShipRestController(ShipComponentLogic shipComponentLogic, ShipRepository shipRepository, BookingComponentBusinessLogic bookingComponentBusinessLogic) {
@@ -64,13 +65,16 @@ public class ShipRestController {
     }
 
     //TODO: move it somewhere else
-    //@RetryableTopic(attempts = "3", backoff = @Backoff(delay = 2_000, maxDelay = 10_000, multiplier = 2))
+    @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 2_000, maxDelay = 10_000, multiplier = 2))
     @KafkaListener(id = "bookings", topics = "bookings", groupId = "ship")
     public void onBookingEvent(Booking booking) throws ShipNotFoundException, BookingAlreadyConfirmedException, ShipDamagedException {
 
+        // Only for testing purpose
+        Ship ship = shipRepository.findById(booking.getShipId()).orElseThrow(() -> new ShipNotFoundException(booking.getShipId()));
+
         // testing retry
-        if (shipDamaged) {
-            shipDamaged = false;
+        if (booking.getBookingStatus().equals(BookingStatus.REQUESTED) && ship.isDamaged() == true) {
+            //shipDamaged = ship.isDamaged();
             LOG.info("FAILED");
             bookingComponentBusinessLogic.cancelBookings(booking.getId());
             throw new ShipDamagedException((long) 22);

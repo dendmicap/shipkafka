@@ -54,7 +54,7 @@ class PopulateTestDataRunner implements CommandLineRunner {
 		shipRepository.save(shipBerlin);
 		Ship shipHamburg = new Ship("Ship Hamburg", 8, true);
 		shipRepository.save(shipHamburg);
-		Ship shipFrankfurt = new Ship("Ship Frankfurt", 20, true);
+		Ship shipFrankfurt = new Ship("Ship Frankfurt", 20, false);
 		shipRepository.save(shipFrankfurt);
 
 		Arrays.asList(

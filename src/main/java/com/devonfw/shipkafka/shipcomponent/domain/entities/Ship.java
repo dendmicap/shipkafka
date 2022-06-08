@@ -33,4 +33,7 @@ public class Ship {
         this.availableContainers = availableContainers;
         this.damaged = damaged;
     }
+
+    // Testing retry
+    //public static Ship of()
 }
