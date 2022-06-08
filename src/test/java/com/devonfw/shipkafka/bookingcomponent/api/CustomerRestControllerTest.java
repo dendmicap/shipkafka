@@ -68,7 +68,7 @@ class CustomerRestControllerTest {
 
         customer = this.customerRepository.save(new Customer("Max", "Muster"));
 
-        ship = this.shipRepository.save(new Ship("Mein Schiff 42", 10));
+        ship = this.shipRepository.save(new Ship("Mein Schiff 42", 10, false));
 
         RestAssured.port = port;
         RestAssured.basePath = "";

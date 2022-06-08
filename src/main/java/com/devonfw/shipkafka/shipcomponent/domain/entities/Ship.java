@@ -25,8 +25,12 @@ public class Ship {
 
     private int availableContainers;
 
-    public Ship(String name, int availableContainers){
+    // Testing retry
+    private boolean damaged;
+
+    public Ship(String name, int availableContainers, boolean damaged){
         this.name = name;
         this.availableContainers = availableContainers;
+        this.damaged = damaged;
     }
 }

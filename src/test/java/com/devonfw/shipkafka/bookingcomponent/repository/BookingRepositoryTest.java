@@ -37,9 +37,9 @@ class BookingRepositoryTest {
         this.bookingRepository.deleteAll();
 
         customer = this.customerRepository.save(new Customer("Max", "Muster"));
-        Booking unconfirmedBooking = new Booking(new Ship("Mein Schiff 1", 5).getId(), 3);
+        Booking unconfirmedBooking = new Booking(new Ship("Mein Schiff 1", 5, false).getId(), 3);
         customer.addBooking(unconfirmedBooking);
-        Booking confirmedBooking = new Booking(new Ship("Mein Schiff 2", 5).getId(), 3);
+        Booking confirmedBooking = new Booking(new Ship("Mein Schiff 2", 5, false).getId(), 3);
         confirmedBooking.updateBookingStatus(BookingStatus.CONFIRMED);
         customer.addBooking(confirmedBooking);
 

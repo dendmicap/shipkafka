@@ -33,7 +33,7 @@ class BookingComponentTest {
     @BeforeEach
     void setUp() {
         this.bookingRepository.deleteAll();
-        Ship ship = new Ship("Mein Hybrid-Schiff", 5);
+        Ship ship = new Ship("Mein Hybrid-Schiff", 5, false);
         confirmedBooking = this.bookingRepository.save(new Booking(ship.getId(), 3));
         confirmedBooking.updateBookingStatus(BookingStatus.CONFIRMED);
     }
