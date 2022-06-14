@@ -16,5 +16,5 @@ public class ShipUpdateDTO {
     private Long id;
 
     @NotNull
-    private boolean damaged;
+    private Boolean damaged;
 }

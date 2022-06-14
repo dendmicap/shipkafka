@@ -5,6 +5,9 @@ import com.devonfw.shipkafka.common.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.common.events.ShipDamagedEvent;
 import com.devonfw.shipkafka.common.exceptions.BookingAlreadyConfirmedException;
+import com.devonfw.shipkafka.shipcomponent.dtos.IdDTO;
+import com.devonfw.shipkafka.shipcomponent.dtos.ShipCreateDTO;
+import com.devonfw.shipkafka.shipcomponent.dtos.ShipUpdateDTO;
 import com.devonfw.shipkafka.shipcomponent.exceptions.ShipDamagedException;
 import com.devonfw.shipkafka.shipcomponent.exceptions.ShipNotFoundException;
 import com.devonfw.shipkafka.shipcomponent.domain.entities.Ship;
@@ -65,7 +68,7 @@ public class ShipRestController {
     }
 
     //TODO: move it somewhere else
-    @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 2_000, maxDelay = 10_000, multiplier = 2))
+    @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 5_000, maxDelay = 30_000, multiplier = 2))
     @KafkaListener(id = "bookings", topics = "bookings", groupId = "ship")
     public void onBookingEvent(Booking booking) throws ShipNotFoundException, BookingAlreadyConfirmedException, ShipDamagedException {
 
@@ -73,7 +76,7 @@ public class ShipRestController {
         Ship ship = shipRepository.findById(booking.getShipId()).orElseThrow(() -> new ShipNotFoundException(booking.getShipId()));
 
         // testing retry
-        if (booking.getBookingStatus().equals(BookingStatus.REQUESTED) && ship.isDamaged() == true) {
+        if (booking.getBookingStatus().equals(BookingStatus.REQUESTED) && ship.getDamaged()) {
             //shipDamaged = ship.isDamaged();
             LOG.info("FAILED");
             bookingComponentBusinessLogic.cancelBookings(booking.getId());
@@ -90,5 +93,29 @@ public class ShipRestController {
          */
 
 
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public IdDTO addShip(@Valid @RequestBody ShipCreateDTO shipCreateDTO){
+
+        return new IdDTO(shipRepository.save(Ship.of(shipCreateDTO)).getId());
+    }
+
+    @PutMapping
+    public void updateShipCondition(@Valid @RequestBody ShipUpdateDTO shipUpdateDTO) throws ShipNotFoundException{
+
+        Ship shipToUpdate = shipRepository
+                .findById(shipUpdateDTO.getId())
+                .orElseThrow(() -> new ShipNotFoundException(shipUpdateDTO.getId()));
+
+        if (!shipUpdateDTO.getDamaged()) {
+            shipToUpdate.setDamaged(false);
+        } else
+        {
+            shipToUpdate.setDamaged(true);
+        }
+
+        shipRepository.save(shipToUpdate);
     }
 }

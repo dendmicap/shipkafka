@@ -1,5 +1,6 @@
 package com.devonfw.shipkafka.shipcomponent.domain.entities;
 
+import com.devonfw.shipkafka.shipcomponent.dtos.ShipCreateDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,14 +27,20 @@ public class Ship {
     private int availableContainers;
 
     // Testing retry
-    private boolean damaged;
+    private Boolean damaged;
 
-    public Ship(String name, int availableContainers, boolean damaged){
+    public Ship(String name, int availableContainers, Boolean damaged){
         this.name = name;
         this.availableContainers = availableContainers;
         this.damaged = damaged;
     }
 
     // Testing retry
-    //public static Ship of()
+    public static Ship of(ShipCreateDTO shipCreateDTO) {
+        return new Ship(
+                shipCreateDTO.getShipName(),
+                shipCreateDTO.getAvailableContainers(),
+                shipCreateDTO.isDamaged()
+        );
+    }
 }

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class IdDTO {
-    
+
     @NotNull
     private Long id;
 }

@@ -36,11 +36,11 @@ public class ShipComponentLogic {
         if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
             throw new BookingAlreadyConfirmedException(booking.getId());
         } else if (booking.getBookingStatus().equals(BookingStatus.REQUESTED)) {
-            if(booking.getContainerCount() < ship.getAvailableContainers() && ship.isDamaged() == false){
+            if(booking.getContainerCount() < ship.getAvailableContainers() && !ship.getDamaged()){
                 ship.setAvailableContainers(ship.getAvailableContainers() - booking.getContainerCount());
                 booking.updateBookingStatus(BookingStatus.CONFIRMED);
                 shipRepository.save(ship);
-            } else if (ship.isDamaged() == true) {
+            } else if (ship.getDamaged()) {
                 booking.updateBookingStatus(BookingStatus.CANCELED);
                 shipRepository.save(ship);
             }
