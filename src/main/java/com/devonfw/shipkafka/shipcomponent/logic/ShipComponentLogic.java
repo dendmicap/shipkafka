@@ -3,6 +3,7 @@ package com.devonfw.shipkafka.shipcomponent.logic;
 import com.devonfw.shipkafka.common.domain.datatypes.BookingStatus;
 import com.devonfw.shipkafka.common.domain.entities.Booking;
 import com.devonfw.shipkafka.common.exceptions.BookingAlreadyConfirmedException;
+import com.devonfw.shipkafka.shipcomponent.exceptions.ShipDamagedException;
 import com.devonfw.shipkafka.shipcomponent.exceptions.ShipNotFoundException;
 import com.devonfw.shipkafka.shipcomponent.domain.entities.Ship;
 import com.devonfw.shipkafka.shipcomponent.domain.repositories.ShipRepository;
@@ -29,26 +30,25 @@ public class ShipComponentLogic {
     }
 
     @Transactional(rollbackFor = {BookingAlreadyConfirmedException.class})
-    public void confirmBooking(Booking booking) throws BookingAlreadyConfirmedException, ShipNotFoundException {
+    public void confirmBooking(Booking booking) throws BookingAlreadyConfirmedException, ShipNotFoundException, ShipDamagedException {
+        //TODO cancel booking if exception
         Ship ship = shipRepository.findById(booking.getShipId()).orElseThrow(() -> new ShipNotFoundException(booking.getShipId()));
         LOG.info("Found: {}", ship);
 
         if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
             throw new BookingAlreadyConfirmedException(booking.getId());
         } else if (booking.getBookingStatus().equals(BookingStatus.REQUESTED)) {
-            if(booking.getContainerCount() < ship.getAvailableContainers() && !ship.getDamaged()){
+            if (ship.isDamaged()) {
+                throw new ShipDamagedException(ship.getId());
+            }
+            if (booking.getContainerCount() < ship.getAvailableContainers()) {
                 ship.setAvailableContainers(ship.getAvailableContainers() - booking.getContainerCount());
                 booking.updateBookingStatus(BookingStatus.CONFIRMED);
                 shipRepository.save(ship);
-            } else if (ship.getDamaged()) {
-                booking.updateBookingStatus(BookingStatus.CANCELED);
-                shipRepository.save(ship);
-            }
-            else {
+            } else {
                 booking.updateBookingStatus(BookingStatus.CANCELED);
             }
         }
-
         template.send("ship-bookings", booking.getId(), booking);
         LOG.info("Sent: {}", booking);
     }
@@ -56,5 +56,11 @@ public class ShipComponentLogic {
     public <T> void sendMessage(String topic, T message) {
         template.send(topic, message);
         LOG.info("Sent: {}", message);
+    }
+
+    public void cancelBookingAndSend(Booking booking){
+        booking.updateBookingStatus(BookingStatus.CANCELED);
+        template.send("ship-bookings", booking.getId(), booking);
+        LOG.info("Sent: {}", booking);
     }
 }

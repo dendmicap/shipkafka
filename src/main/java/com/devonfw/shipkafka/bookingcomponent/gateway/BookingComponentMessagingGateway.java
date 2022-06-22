@@ -53,7 +53,7 @@ public class BookingComponentMessagingGateway {
             fail = false;
             //throw new RuntimeException("failed");
             LOG.info("FAILED");
-            throw new ShipNotFoundException((long) 22);
+            throw new ShipNotFoundException(shipDamagedEvent.getShipId());
         }
         LOG.info("Received message: {}", shipDamagedEvent.toString());
         bookingComponentBusinessLogic.cancelBookings(shipDamagedEvent.getShipId());
@@ -73,7 +73,6 @@ public class BookingComponentMessagingGateway {
     }
 
 
-
     public <T> void sendMessage(String topic, T message) {
         LOG.info("Sending message : {}", message.toString());
         template.send(topic, message);
@@ -87,7 +86,7 @@ public class BookingComponentMessagingGateway {
     @Bean
     public NewTopic bookings() {
         return TopicBuilder.name("bookings")
-                .partitions(3)
+                .partitions(2)
                 .compact()
                 .build();
     }
@@ -95,7 +94,7 @@ public class BookingComponentMessagingGateway {
     @Bean
     public NewTopic shipTopic() {
         return TopicBuilder.name("ship-bookings")
-                .partitions(3)
+                .partitions(2)
                 .compact()
                 .build();
     }

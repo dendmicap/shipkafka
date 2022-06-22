@@ -15,6 +15,8 @@ public class ShipUpdateDTO {
     @NotNull
     private Long id;
 
-    @NotNull
+    private Integer availableContainers;
+
+    //@NotNull
     private Boolean damaged;
 }

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.retry.annotation.Backoff;
@@ -32,7 +33,7 @@ public class ShipRestController {
     private final ShipComponentLogic shipComponentLogic;
 
     // testing retry
-    private final BookingComponentBusinessLogic bookingComponentBusinessLogic;
+    //private final BookingComponentBusinessLogic bookingComponentBusinessLogic;
 
     private final ShipRepository shipRepository;
 
@@ -41,10 +42,10 @@ public class ShipRestController {
     private boolean shipDamaged;
 
     @Autowired
-    public ShipRestController(ShipComponentLogic shipComponentLogic, ShipRepository shipRepository, BookingComponentBusinessLogic bookingComponentBusinessLogic) {
+    public ShipRestController(ShipComponentLogic shipComponentLogic, ShipRepository shipRepository) {
         this.shipComponentLogic = shipComponentLogic;
         this.shipRepository = shipRepository;
-        this.bookingComponentBusinessLogic = bookingComponentBusinessLogic;
+        //this.bookingComponentBusinessLogic = bookingComponentBusinessLogic;
     }
 
     @GetMapping
@@ -67,33 +68,6 @@ public class ShipRestController {
         return shipDamagedEvent;
     }
 
-    //TODO: move it somewhere else
-    @RetryableTopic(attempts = "3", backoff = @Backoff(delay = 5_000, maxDelay = 30_000, multiplier = 2))
-    @KafkaListener(id = "bookings", topics = "bookings", groupId = "ship")
-    public void onBookingEvent(Booking booking) throws ShipNotFoundException, BookingAlreadyConfirmedException, ShipDamagedException {
-
-        // Only for testing purpose
-        Ship ship = shipRepository.findById(booking.getShipId()).orElseThrow(() -> new ShipNotFoundException(booking.getShipId()));
-
-        // testing retry
-        if (booking.getBookingStatus().equals(BookingStatus.REQUESTED) && ship.getDamaged()) {
-            //shipDamaged = ship.isDamaged();
-            LOG.info("FAILED");
-            bookingComponentBusinessLogic.cancelBookings(booking.getId());
-            throw new ShipDamagedException((long) 22);
-        } else {
-            LOG.info("Received: {}", booking);
-            shipComponentLogic.confirmBooking(booking);
-        }
-
-
-        /*
-        LOG.info("Received: {}", booking);
-        shipComponentLogic.confirmBooking(booking);
-         */
-
-
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -103,19 +77,47 @@ public class ShipRestController {
     }
 
     @PutMapping
-    public void updateShipCondition(@Valid @RequestBody ShipUpdateDTO shipUpdateDTO) throws ShipNotFoundException{
+    public void updateShip(@Valid @RequestBody ShipUpdateDTO shipUpdateDTO) throws ShipNotFoundException{
 
         Ship shipToUpdate = shipRepository
                 .findById(shipUpdateDTO.getId())
                 .orElseThrow(() -> new ShipNotFoundException(shipUpdateDTO.getId()));
 
-        if (!shipUpdateDTO.getDamaged()) {
-            shipToUpdate.setDamaged(false);
-        } else
-        {
-            shipToUpdate.setDamaged(true);
+
+        if (shipUpdateDTO.getDamaged() != null) {
+            shipToUpdate.setDamaged(shipUpdateDTO.getDamaged());
+        }
+
+        if (shipUpdateDTO.getAvailableContainers() != null) {
+            shipToUpdate.setAvailableContainers(shipUpdateDTO.getAvailableContainers());
         }
 
         shipRepository.save(shipToUpdate);
     }
+
+
+    //Kafka
+
+
+    //TODO: move it somewhere else
+    @RetryableTopic(include = {ShipDamagedException.class}, attempts = "3", backoff = @Backoff(delay = 5_000, maxDelay = 30_000, multiplier = 2))
+    @KafkaListener(id = "bookings", topics = "bookings", groupId = "ship")
+    public void onBookingEvent(Booking booking) throws ShipNotFoundException, BookingAlreadyConfirmedException, ShipDamagedException {
+
+        // Only for testing purpose
+        //Ship ship = shipRepository.findById(booking.getShipId()).orElseThrow(() -> new ShipNotFoundException(booking.getShipId()));
+
+        LOG.info("Received: {}", booking);
+        shipComponentLogic.confirmBooking(booking);
+
+    }
+
+    @DltHandler
+    public void onBookingEventDlt(Booking booking) {
+        LOG.info("Received DLT message: {}", booking.toString());
+        shipComponentLogic.cancelBookingAndSend(booking);
+    }
+
+
+
 }
