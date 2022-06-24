@@ -39,6 +39,7 @@ public class ShipComponentLogic {
             throw new BookingAlreadyConfirmedException(booking.getId());
         } else if (booking.getBookingStatus().equals(BookingStatus.REQUESTED)) {
             if (ship.isDamaged()) {
+                LOG.info("Ship {} is damaged. Retrying.", ship.getId());
                 throw new ShipDamagedException(ship.getId());
             }
             if (booking.getContainerCount() < ship.getAvailableContainers()) {

@@ -100,7 +100,7 @@ public class ShipRestController {
 
 
     //TODO: move it somewhere else
-    @RetryableTopic(include = {ShipDamagedException.class}, attempts = "3", backoff = @Backoff(delay = 5_000, maxDelay = 30_000, multiplier = 2))
+    @RetryableTopic(include = {ShipDamagedException.class, ShipNotFoundException.class}, attempts = "3", backoff = @Backoff(delay = 5_000, maxDelay = 30_000, multiplier = 2))
     @KafkaListener(id = "bookings", topics = "bookings", groupId = "ship")
     public void onBookingEvent(Booking booking) throws ShipNotFoundException, BookingAlreadyConfirmedException, ShipDamagedException {
 
